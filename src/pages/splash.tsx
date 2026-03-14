@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Camera, Loader2 } from 'lucide-react';
-import { seedDemoData } from '../lib/seed';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 
 export default function Splash() {
@@ -14,9 +13,6 @@ export default function Splash() {
     let isMounted = true;
     
     const initializeApp = async () => {
-      // Run the seeding function in the background
-      seedDemoData().catch(console.error);
-
       const hasSeenSplash = sessionStorage.getItem('hasSeenSplash');
       if (hasSeenSplash) {
         navigate('/home', { replace: true });

@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Package, Users, ShoppingCart, MessageSquare, Gamepad2, ArrowLeft, Plus, Edit, Trash2, TrendingUp, DollarSign, Activity, Image as ImageIcon, CheckCircle, XCircle } from 'lucide-react';
+import { Package, Users, ShoppingCart, MessageSquare, Gamepad2, ArrowLeft, Plus, Edit, Trash2, TrendingUp, DollarSign, Activity, Image as ImageIcon, CheckCircle, XCircle, Database } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { supabase } from '../lib/supabase';
+import { seedDemoData } from '../lib/seed';
 
 export default function AdminPanel() {
   const { user, token } = useAuth();
@@ -380,6 +381,18 @@ export default function AdminPanel() {
     }
   };
 
+  const handleSeedData = async () => {
+    try {
+      toast.loading('Seeding demo data...', { id: 'seed' });
+      await seedDemoData(true);
+      toast.success('Demo data seeded successfully!', { id: 'seed' });
+      fetchData();
+    } catch (error) {
+      console.error('Failed to seed data', error);
+      toast.error('Failed to seed demo data', { id: 'seed' });
+    }
+  };
+
   const openAddModal = () => {
     setEditingProduct(null);
     setFormData({ name: '', price: '', description: '', category: categories[0]?.name || '', image: '', stock: '10' });
@@ -462,8 +475,13 @@ export default function AdminPanel() {
             <div className="space-y-6">
               <div className="flex justify-between items-center">
                 <h2 className="text-2xl font-bold">Dashboard Overview</h2>
-                <div className="bg-white/5 px-4 py-2 rounded-xl text-sm text-gray-400 border border-white/10">
-                  Last 7 Days
+                <div className="flex gap-2">
+                  <button onClick={handleSeedData} className="flex items-center gap-2 bg-accent/20 text-accent hover:bg-accent/30 px-4 py-2 rounded-xl text-sm border border-accent/30 transition-colors">
+                    <Database size={16} /> Seed Demo Data
+                  </button>
+                  <div className="bg-white/5 px-4 py-2 rounded-xl text-sm text-gray-400 border border-white/10">
+                    Last 7 Days
+                  </div>
                 </div>
               </div>
               

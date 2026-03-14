@@ -1,26 +1,28 @@
 import { supabase, isSupabaseConfigured } from './supabase';
 
-export const seedDemoData = async () => {
+export const seedDemoData = async (force: boolean = false) => {
   if (!isSupabaseConfigured) {
     console.log('Supabase not configured, skipping seed.');
     return;
   }
   try {
-    // Check if categories already exist
-    const { data: existingCategories, error: catCheckError } = await supabase
-      .from('categories')
-      .select('id')
-      .limit(1);
+    if (!force) {
+      // Check if categories already exist
+      const { data: existingCategories, error: catCheckError } = await supabase
+        .from('categories')
+        .select('id')
+        .limit(1);
 
-    if (catCheckError) {
-      console.error('Error checking categories:', catCheckError);
-      return;
-    }
+      if (catCheckError) {
+        console.error('Error checking categories:', catCheckError);
+        throw catCheckError;
+      }
 
-    // If we already have data, don't seed
-    if (existingCategories && existingCategories.length > 0) {
-      console.log('Database already has data, skipping seed.');
-      return;
+      // If we already have data, don't seed
+      if (existingCategories && existingCategories.length > 0) {
+        console.log('Database already has data, skipping seed.');
+        return;
+      }
     }
 
     console.log('Seeding demo data...');
@@ -34,7 +36,10 @@ export const seedDemoData = async () => {
     ];
 
     const { error: catError } = await supabase.from('categories').insert(categories);
-    if (catError) console.error('Error seeding categories:', catError);
+    if (catError) {
+      console.error('Error seeding categories:', catError);
+      throw catError;
+    }
 
     // 2. Seed Products
     const products = [
@@ -86,7 +91,10 @@ export const seedDemoData = async () => {
     ];
 
     const { error: prodError } = await supabase.from('products').insert(products);
-    if (prodError) console.error('Error seeding products:', prodError);
+    if (prodError) {
+      console.error('Error seeding products:', prodError);
+      throw prodError;
+    }
 
     // 3. Seed Banners
     const banners = [
@@ -103,10 +111,14 @@ export const seedDemoData = async () => {
     ];
 
     const { error: bannerError } = await supabase.from('banners').insert(banners);
-    if (bannerError) console.error('Error seeding banners:', bannerError);
+    if (bannerError) {
+      console.error('Error seeding banners:', bannerError);
+      throw bannerError;
+    }
 
     console.log('Demo data seeded successfully!');
   } catch (err) {
     console.error('Unexpected error during seeding:', err);
+    throw err;
   }
 };
