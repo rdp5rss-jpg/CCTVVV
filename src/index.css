@@ -1,0 +1,95 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: var(--color-primary);
+  --color-secondary: var(--color-secondary);
+  --color-bg-start: var(--color-bg-start);
+  --color-bg-end: var(--color-bg-end);
+  --color-accent: var(--color-accent);
+  --color-text: var(--color-text);
+  --color-card: var(--color-card);
+}
+
+:root {
+  /* Default Dark Theme */
+  --color-primary: #2563EB;
+  --color-secondary: #7C3AED;
+  --color-bg-start: #0B1220;
+  --color-bg-end: #0F172A;
+  --color-accent: #22D3EE;
+  --color-text: #FFFFFF;
+  --color-card: rgba(30, 41, 59, 0.7);
+}
+
+.light {
+  --color-primary: #3B82F6;
+  --color-secondary: #8B5CF6;
+  --color-bg-start: #F8FAFC;
+  --color-bg-end: #E2E8F0;
+  --color-accent: #06B6D4;
+  --color-text: #0F172A;
+  --color-card: rgba(255, 255, 255, 0.8);
+}
+
+.blue {
+  --color-primary: #0284C7;
+  --color-secondary: #0369A1;
+  --color-bg-start: #082F49;
+  --color-bg-end: #0C4A6E;
+  --color-accent: #38BDF8;
+  --color-text: #F0F9FF;
+  --color-card: rgba(12, 74, 110, 0.7);
+}
+
+.gold {
+  --color-primary: #D97706;
+  --color-secondary: #B45309;
+  --color-bg-start: #451A03;
+  --color-bg-end: #78350F;
+  --color-accent: #FBBF24;
+  --color-text: #FEF3C7;
+  --color-card: rgba(120, 53, 15, 0.7);
+}
+
+body {
+  background: linear-gradient(to bottom right, var(--color-bg-start), var(--color-bg-end));
+  color: var(--color-text);
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+  
+  /* Security features */
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: pan-y;
+}
+
+/* Glassmorphism utility */
+.glass {
+  background: var(--color-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-glow {
+  box-shadow: 0 0 15px rgba(34, 211, 238, 0.2);
+}
+
+.gradient-text {
+  background: linear-gradient(to right, var(--color-primary), var(--color-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gradient-bg {
+  background: linear-gradient(to right, var(--color-primary), var(--color-secondary));
+}
+
+/* Hide scrollbar for horizontal scroll */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
