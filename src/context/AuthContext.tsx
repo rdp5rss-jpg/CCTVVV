@@ -56,7 +56,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             .from('profiles')
             .select('*')
             .eq('id', session.user.id)
-            .single();
+            .maybeSingle();
             
           if (profile && mounted) {
             const isAdminEmail = session.user.email?.toLowerCase() === 'stcctvsolutions1990@gmail.com';
@@ -99,45 +99,49 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     let subscription: any = null;
     if (isSupabaseConfigured) {
       const { data } = supabase.auth.onAuthStateChange(async (_event, session) => {
-        if (session?.user && mounted) {
-          setToken(session.access_token);
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', session.user.id)
-            .single();
-            
-          if (profile && mounted) {
-            const isAdminEmail = session.user.email?.toLowerCase() === 'stcctvsolutions1990@gmail.com';
-            let currentRole = profile.role || 'user';
-            
-            if (isAdminEmail && currentRole !== 'admin') {
-              // Update the database so RLS policies work
-              await supabase.from('profiles').update({ role: 'admin' }).eq('id', session.user.id);
-              currentRole = 'admin';
-            }
+        try {
+          if (session?.user && mounted) {
+            setToken(session.access_token);
+            const { data: profile } = await supabase
+              .from('profiles')
+              .select('*')
+              .eq('id', session.user.id)
+              .maybeSingle();
+              
+            if (profile && mounted) {
+              const isAdminEmail = session.user.email?.toLowerCase() === 'stcctvsolutions1990@gmail.com';
+              let currentRole = profile.role || 'user';
+              
+              if (isAdminEmail && currentRole !== 'admin') {
+                await supabase.from('profiles').update({ role: 'admin' }).eq('id', session.user.id);
+                currentRole = 'admin';
+              }
 
-            setUser({
-              id: session.user.id,
-              email: session.user.email || '',
-              name: profile.name || '',
-              phone: profile.phone || '',
-              address: profile.address || '',
-              role: currentRole
-            });
+              setUser({
+                id: session.user.id,
+                email: session.user.email || '',
+                name: profile.name || '',
+                phone: profile.phone || '',
+                address: profile.address || '',
+                role: currentRole
+              });
+            } else if (mounted) {
+              setUser({
+                id: session.user.id,
+                email: session.user.email || '',
+                name: '',
+                role: session.user.email?.toLowerCase() === 'stcctvsolutions1990@gmail.com' ? 'admin' : 'user'
+              });
+            }
           } else if (mounted) {
-            setUser({
-              id: session.user.id,
-              email: session.user.email || '',
-              name: '',
-              role: session.user.email?.toLowerCase() === 'stcctvsolutions1990@gmail.com' ? 'admin' : 'user'
-            });
+            setToken(null);
+            setUser(null);
           }
-        } else if (mounted) {
-          setToken(null);
-          setUser(null);
+        } catch (error) {
+          console.error('Error in auth state change:', error);
+        } finally {
+          if (mounted) setLoading(false);
         }
-        if (mounted) setLoading(false);
       });
       subscription = data.subscription;
     }

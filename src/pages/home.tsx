@@ -14,23 +14,31 @@ export default function Home() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    let mounted = true;
     const fetchProducts = async () => {
       try {
-        const { data, error } = await supabase
+        const fetchPromise = supabase
           .from('products')
           .select('*')
           .order('created_at', { ascending: false })
           .limit(8);
           
+        const timeoutPromise = new Promise<any>((_, reject) => 
+          setTimeout(() => reject(new Error('Timeout')), 5000)
+        );
+
+        const { data, error } = await Promise.race([fetchPromise, timeoutPromise]);
+          
         if (error) throw error;
-        setProducts(data || []);
+        if (mounted) setProducts(data || []);
       } catch (error) {
         console.error('Failed to fetch products', error);
       } finally {
-        setLoading(false);
+        if (mounted) setLoading(false);
       }
     };
     fetchProducts();
+    return () => { mounted = false; };
   }, []);
 
   return (

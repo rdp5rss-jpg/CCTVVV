@@ -17,6 +17,7 @@ export default function Products() {
   const search = searchParams.get('search');
 
   useEffect(() => {
+    let mounted = true;
     const fetchProducts = async () => {
       try {
         let query = supabase.from('products').select('*');
@@ -25,7 +26,11 @@ export default function Products() {
           query = query.eq('category', category);
         }
 
-        const { data: resData, error } = await query;
+        const timeoutPromise = new Promise<any>((_, reject) => 
+          setTimeout(() => reject(new Error('Timeout')), 5000)
+        );
+
+        const { data: resData, error } = await Promise.race([query, timeoutPromise]);
         if (error) throw error;
         
         let data = resData || [];
@@ -43,14 +48,15 @@ export default function Products() {
         else if (sortBy === 'rating') data.sort((a: any, b: any) => (b.rating || 0) - (a.rating || 0));
         else data.sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
-        setProducts(data);
+        if (mounted) setProducts(data);
       } catch (error) {
         console.error('Failed to fetch products', error);
       } finally {
-        setLoading(false);
+        if (mounted) setLoading(false);
       }
     };
     fetchProducts();
+    return () => { mounted = false; };
   }, [sortBy, category, search]);
 
   return (
