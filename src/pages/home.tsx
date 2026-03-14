@@ -6,7 +6,7 @@ import CategoryScroll from '../components/CategoryScroll';
 import ProductCard from '../components/ProductCard';
 import BottomNav from '../components/BottomNav';
 import LoadingModal from '../components/LoadingModal';
-import { supabase } from '../lib/supabase';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
 
 export default function Home() {
   const [products, setProducts] = useState<any[]>([]);
@@ -16,18 +16,20 @@ export default function Home() {
   useEffect(() => {
     let mounted = true;
     const fetchProducts = async () => {
+      if (!isSupabaseConfigured) {
+        if (mounted) {
+          setProducts([]);
+          setLoading(false);
+        }
+        return;
+      }
+
       try {
-        const fetchPromise = supabase
+        const { data, error } = await supabase
           .from('products')
           .select('*')
           .order('created_at', { ascending: false })
           .limit(8);
-          
-        const timeoutPromise = new Promise<any>((_, reject) => 
-          setTimeout(() => reject(new Error('Timeout')), 5000)
-        );
-
-        const { data, error } = await Promise.race([fetchPromise, timeoutPromise]);
           
         if (error) throw error;
         if (mounted) setProducts(data || []);

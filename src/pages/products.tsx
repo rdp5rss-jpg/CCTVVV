@@ -6,7 +6,7 @@ import Navbar from '../components/Navbar';
 import ProductCard from '../components/ProductCard';
 import BottomNav from '../components/BottomNav';
 import LoadingModal from '../components/LoadingModal';
-import { supabase } from '../lib/supabase';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
 
 export default function Products() {
   const [products, setProducts] = useState<any[]>([]);
@@ -19,6 +19,14 @@ export default function Products() {
   useEffect(() => {
     let mounted = true;
     const fetchProducts = async () => {
+      if (!isSupabaseConfigured) {
+        if (mounted) {
+          setProducts([]);
+          setLoading(false);
+        }
+        return;
+      }
+
       try {
         let query = supabase.from('products').select('*');
         
@@ -26,11 +34,7 @@ export default function Products() {
           query = query.eq('category', category);
         }
 
-        const timeoutPromise = new Promise<any>((_, reject) => 
-          setTimeout(() => reject(new Error('Timeout')), 5000)
-        );
-
-        const { data: resData, error } = await Promise.race([query, timeoutPromise]);
+        const { data: resData, error } = await query;
         if (error) throw error;
         
         let data = resData || [];
