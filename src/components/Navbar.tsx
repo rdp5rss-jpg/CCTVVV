@@ -31,7 +31,7 @@ export default function Navbar() {
             >
               <Menu size={24} />
             </motion.button>
-            <h1 className="text-xl font-bold gradient-text tracking-tight">Mi Kings</h1>
+            <h1 className="text-xl font-bold gradient-text tracking-tight">ST CCTV SOLUTIONS</h1>
           </div>
           <motion.button whileTap={{ scale: 0.9 }} className="relative p-2 text-white">
             <Bell size={24} />

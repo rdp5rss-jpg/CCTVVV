@@ -45,7 +45,7 @@ export default function OrderConfirmed() {
           transition={{ delay: 0.6 }}
           className="text-gray-400 text-lg"
         >
-          Thank you for shopping with Mi Kings.
+          Thank you for shopping with ST CCTV SOLUTIONS.
         </motion.p>
       </motion.div>
       

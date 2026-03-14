@@ -125,7 +125,7 @@ export default function Splash() {
         <div className="w-32 h-32 rounded-full glass-glow flex items-center justify-center mb-8 bg-gradient-to-tr from-primary to-secondary shadow-[0_0_40px_rgba(34,211,238,0.4)]">
           <Camera size={64} className="text-white" strokeWidth={1.5} />
         </div>
-        <h1 className="text-4xl font-bold text-white tracking-tighter mb-2">Mi Kings</h1>
+        <h1 className="text-4xl font-bold text-white tracking-tighter mb-2 text-center">ST CCTV SOLUTIONS</h1>
         <p className="text-accent tracking-widest uppercase text-sm font-medium mb-12">Capture the Future</p>
         
         {/* Loading Progress */}

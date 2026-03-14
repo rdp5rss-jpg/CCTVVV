@@ -49,7 +49,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
             className="fixed top-0 left-0 bottom-0 w-72 glass border-r border-white/10 z-50 flex flex-col"
           >
             <div className="p-4 border-b border-white/10 flex justify-between items-center">
-              <h2 className="text-xl font-bold gradient-text tracking-tight">Mi Kings</h2>
+              <h2 className="text-xl font-bold gradient-text tracking-tight">ST CCTV SOLUTIONS</h2>
               <button onClick={onClose} className="p-2 text-white hover:bg-white/10 rounded-full transition-colors">
                 <X size={24} />
               </button>

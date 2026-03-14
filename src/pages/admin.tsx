@@ -214,6 +214,10 @@ export default function AdminPanel() {
 
   const handleSaveProduct = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formData.name || !formData.price || !formData.category || !formData.description) {
+      toast.error('Please fill in all required fields');
+      return;
+    }
     try {
       const productData = {
         name: formData.name,
@@ -257,6 +261,10 @@ export default function AdminPanel() {
 
   const handleSaveCategory = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!categoryFormData.name) {
+      toast.error('Please enter a category name');
+      return;
+    }
     try {
       const payload = {
         name: categoryFormData.name,
@@ -327,6 +335,10 @@ export default function AdminPanel() {
 
   const handleSaveGame = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!gameFormData.title || !gameFormData.url) {
+      toast.error('Please fill in both Title and Game URL');
+      return;
+    }
     try {
       if (editingGame) {
         const { error } = await supabase.from('games').update(gameFormData).eq('id', editingGame.id);
@@ -358,6 +370,10 @@ export default function AdminPanel() {
 
   const handleSaveBanner = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!bannerFormData.image) {
+      toast.error('Please provide a banner image');
+      return;
+    }
     try {
       const { error } = await supabase.from('banners').insert([bannerFormData]);
       if (error) throw error;
@@ -835,21 +851,21 @@ export default function AdminPanel() {
             <form onSubmit={handleSaveProduct} className="space-y-4">
               <div>
                 <label className="block text-sm text-gray-400 mb-1">Name</label>
-                <input required type="text" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-accent" />
+                <input type="text" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-accent" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm text-gray-400 mb-1">Price (₹)</label>
-                  <input required type="number" value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-accent" />
+                  <input type="number" value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-accent" />
                 </div>
                 <div>
                   <label className="block text-sm text-gray-400 mb-1">Stock</label>
-                  <input required type="number" value={formData.stock} onChange={e => setFormData({...formData, stock: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-accent" />
+                  <input type="number" value={formData.stock} onChange={e => setFormData({...formData, stock: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-accent" />
                 </div>
               </div>
               <div>
                 <label className="block text-sm text-gray-400 mb-1">Category</label>
-                <select required value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-accent">
+                <select value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-accent">
                   <option value="" disabled className="bg-gray-900">Select Category</option>
                   {categories.map(c => (
                     <option key={c.id} value={c.name} className="bg-gray-900">{c.name}</option>
@@ -873,7 +889,7 @@ export default function AdminPanel() {
               </div>
               <div>
                 <label className="block text-sm text-gray-400 mb-1">Description</label>
-                <textarea required value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-accent h-24 resize-none"></textarea>
+                <textarea value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-accent h-24 resize-none"></textarea>
               </div>
               
               <div className="flex gap-3 pt-4">
@@ -901,7 +917,7 @@ export default function AdminPanel() {
             <form onSubmit={handleSaveCategory} className="space-y-4">
               <div>
                 <label className="block text-sm text-gray-400 mb-1">Category Name</label>
-                <input required type="text" value={categoryFormData.name} onChange={e => setCategoryFormData({...categoryFormData, name: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-accent" />
+                <input type="text" value={categoryFormData.name} onChange={e => setCategoryFormData({...categoryFormData, name: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-accent" />
               </div>
               <div>
                 <label className="block text-sm text-gray-400 mb-1">Image</label>
@@ -943,11 +959,11 @@ export default function AdminPanel() {
             <form onSubmit={handleSaveGame} className="space-y-4">
               <div>
                 <label className="block text-sm text-gray-400 mb-1">Title</label>
-                <input required type="text" value={gameFormData.title} onChange={e => setGameFormData({...gameFormData, title: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-accent" />
+                <input type="text" value={gameFormData.title} onChange={e => setGameFormData({...gameFormData, title: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-accent" />
               </div>
               <div>
                 <label className="block text-sm text-gray-400 mb-1">Game URL (HTML5)</label>
-                <input required type="text" value={gameFormData.url} onChange={e => setGameFormData({...gameFormData, url: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-accent" />
+                <input type="text" value={gameFormData.url} onChange={e => setGameFormData({...gameFormData, url: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-accent" />
               </div>
               <div>
                 <label className="block text-sm text-gray-400 mb-1">Thumbnail</label>
@@ -1000,7 +1016,7 @@ export default function AdminPanel() {
                   </label>
                 </div>
                 <p className="text-xs text-gray-500 mt-2">Or paste image URL below:</p>
-                <input required type="text" value={bannerFormData.image} onChange={e => setBannerFormData({...bannerFormData, image: e.target.value})} placeholder="https://..." className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-accent mt-1" />
+                <input type="text" value={bannerFormData.image} onChange={e => setBannerFormData({...bannerFormData, image: e.target.value})} placeholder="https://..." className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-accent mt-1" />
               </div>
               <div>
                 <label className="block text-sm text-gray-400 mb-1">Link (Optional - Product or Category URL)</label>
